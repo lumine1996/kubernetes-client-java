@@ -1,0 +1,3825 @@
+kind: CustomResourceDefinition
+apiVersion: apiextensions.k8s.io/v1
+metadata:
+  name: virtualmachineinstances.kubevirt.io
+  labels:
+    app.kubernetes.io/component: kubevirt
+    app.kubernetes.io/managed-by: virt-operator
+    kubevirt.io: ''
+  annotations:
+    kubevirt.io/install-strategy-registry: quay.io/kubevirt
+    kubevirt.io/install-strategy-version: v1.0.1
+spec:
+  group: kubevirt.io
+  names:
+    plural: virtualmachineinstances
+    singular: virtualmachineinstance
+    shortNames:
+      - vmi
+      - vmis
+    kind: VirtualMachineInstance
+    listKind: VirtualMachineInstanceList
+    categories:
+      - all
+  scope: Namespaced
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          required:
+            - spec
+          properties:
+            apiVersion:
+              type: string
+            kind:
+              type: string
+            metadata:
+              type: object
+            spec:
+              type: object
+              required:
+                - domain
+              properties:
+                accessCredentials:
+                  description: Specifies a set of public keys to inject into the vm guest
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      sshPublicKey:
+                        type: object
+                        required:
+                          - propagationMethod
+                          - source
+                        properties:
+                          propagationMethod:
+                            type: object
+                            properties:
+                              configDrive:
+                                type: object
+                              qemuGuestAgent:
+                                type: object
+                                required:
+                                  - users
+                                properties:
+                                  users:
+                                    type: array
+                                    items:
+                                      type: string
+                                    x-kubernetes-list-type: set
+                          source:
+                            type: object
+                            properties:
+                              secret:
+                                type: object
+                                required:
+                                  - secretName
+                                properties:
+                                  secretName:
+                                    type: string
+                      userPassword:
+                        type: object
+                        required:
+                          - propagationMethod
+                          - source
+                        properties:
+                          propagationMethod:
+                            type: object
+                            properties:
+                              qemuGuestAgent:
+                                type: object
+                          source:
+                            type: object
+                            properties:
+                              secret:
+                                type: object
+                                required:
+                                  - secretName
+                                properties:
+                                  secretName:
+                                    type: string
+                  x-kubernetes-list-type: atomic
+                affinity:
+                  description: If affinity is specifies, obey all the affinity rules
+                  type: object
+                  properties:
+                    nodeAffinity:
+                      description: Describes node affinity scheduling rules for the pod.
+                      type: object
+                      properties:
+                        preferredDuringSchedulingIgnoredDuringExecution:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - preference
+                              - weight
+                            properties:
+                              preference:
+                                type: object
+                                properties:
+                                  matchExpressions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                                  matchFields:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                              weight:
+                                type: integer
+                                format: int32
+                        requiredDuringSchedulingIgnoredDuringExecution:
+                          type: object
+                          required:
+                            - nodeSelectorTerms
+                          properties:
+                            nodeSelectorTerms:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  matchExpressions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                                  matchFields:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                    podAffinity:
+                      type: object
+                      properties:
+                        preferredDuringSchedulingIgnoredDuringExecution:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - podAffinityTerm
+                              - weight
+                            properties:
+                              podAffinityTerm:
+                                type: object
+                                required:
+                                  - topologyKey
+                                properties:
+                                  labelSelector:
+                                    type: object
+                                    properties:
+                                      matchExpressions:
+                                        type: array
+                                        items:
+                                          type: object
+                                          required:
+                                            - key
+                                            - operator
+                                          properties:
+                                            key:
+                                              type: string
+                                            operator:
+                                              type: string
+                                            values:
+                                              type: array
+                                              items:
+                                                type: string
+                                      matchLabels:
+                                        type: object
+                                        additionalProperties:
+                                          type: string
+                                  namespaceSelector:
+                                    type: object
+                                    properties:
+                                      matchExpressions:
+                                        type: array
+                                        items:
+                                          type: object
+                                          required:
+                                            - key
+                                            - operator
+                                          properties:
+                                            key:
+                                              type: string
+                                            operator:
+                                              type: string
+                                            values:
+                                              type: array
+                                              items:
+                                                type: string
+                                      matchLabels:
+                                        type: object
+                                        additionalProperties:
+                                          type: string
+                                  namespaces:
+                                    type: array
+                                    items:
+                                      type: string
+                                  topologyKey:
+                                    type: string
+                              weight:
+                                type: integer
+                                format: int32
+                        requiredDuringSchedulingIgnoredDuringExecution:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - topologyKey
+                            properties:
+                              labelSelector:
+                                type: object
+                                properties:
+                                  matchExpressions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                                  matchLabels:
+                                    type: object
+                                    additionalProperties:
+                                      type: string
+                              namespaceSelector:
+                                type: object
+                                properties:
+                                  matchExpressions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                                  matchLabels:
+                                    type: object
+                                    additionalProperties:
+                                      type: string
+                              namespaces:
+                                type: array
+                                items:
+                                  type: string
+                              topologyKey:
+                                type: string
+                    podAntiAffinity:
+                      type: object
+                      properties:
+                        preferredDuringSchedulingIgnoredDuringExecution:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - podAffinityTerm
+                              - weight
+                            properties:
+                              podAffinityTerm:
+                                type: object
+                                required:
+                                  - topologyKey
+                                properties:
+                                  labelSelector:
+                                    type: object
+                                    properties:
+                                      matchExpressions:
+                                        type: array
+                                        items:
+                                          type: object
+                                          required:
+                                            - key
+                                            - operator
+                                          properties:
+                                            key:
+                                              type: string
+                                            operator:
+                                              type: string
+                                            values:
+                                              type: array
+                                              items:
+                                                type: string
+                                      matchLabels:
+                                        type: object
+                                        additionalProperties:
+                                          type: string
+                                  namespaceSelector:
+                                    type: object
+                                    properties:
+                                      matchExpressions:
+                                        type: array
+                                        items:
+                                          type: object
+                                          required:
+                                            - key
+                                            - operator
+                                          properties:
+                                            key:
+                                              type: string
+                                            operator:
+                                              type: string
+                                            values:
+                                              type: array
+                                              items:
+                                                type: string
+                                      matchLabels:
+                                        type: object
+                                        additionalProperties:
+                                          type: string
+                                  namespaces:
+                                    type: array
+                                    items:
+                                      type: string
+                                  topologyKey:
+                                    type: string
+                              weight:
+                                type: integer
+                                format: int32
+                        requiredDuringSchedulingIgnoredDuringExecution:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - topologyKey
+                            properties:
+                              labelSelector:
+                                type: object
+                                properties:
+                                  matchExpressions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                                  matchLabels:
+                                    type: object
+                                    additionalProperties:
+                                      type: string
+                              namespaceSelector:
+                                type: object
+                                properties:
+                                  matchExpressions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                                  matchLabels:
+                                    type: object
+                                    additionalProperties:
+                                      type: string
+                              namespaces:
+                                type: array
+                                items:
+                                  type: string
+                              topologyKey:
+                                type: string
+                architecture:
+                  type: string
+                dnsConfig:
+                  type: object
+                  properties:
+                    nameservers:
+                      type: array
+                      items:
+                        type: string
+                    options:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            description: Required.
+                            type: string
+                          value:
+                            type: string
+                    searches:
+                      type: array
+                      items:
+                        type: string
+                dnsPolicy:
+                  type: string
+                domain:
+                  type: object
+                  required:
+                    - devices
+                  properties:
+                    chassis:
+                      description: Chassis specifies the chassis info passed to the domain.
+                      type: object
+                      properties:
+                        asset:
+                          type: string
+                        manufacturer:
+                          type: string
+                        serial:
+                          type: string
+                        sku:
+                          type: string
+                        version:
+                          type: string
+                    clock:
+                      description: Clock sets the clock and timers of the vmi.
+                      type: object
+                      properties:
+                        timer:
+                          description: Timer specifies whih timers are attached to the vmi.
+                          type: object
+                          properties:
+                            hpet:
+                              type: object
+                              properties:
+                                present:
+                                  type: boolean
+                                tickPolicy:
+                                  type: string
+                            hyperv:
+                              type: object
+                              properties:
+                                present:
+                                  type: boolean
+                            kvm:
+                              description: "KVM \t(KVM clock) - lets guests read the host’s wall clock time (paravirtualized). For linux guests."
+                              type: object
+                              properties:
+                                present:
+                                  type: boolean
+                            pit:
+                              type: object
+                              properties:
+                                present:
+                                  type: boolean
+                                tickPolicy:
+                                  type: string
+                            rtc:
+                              type: object
+                              properties:
+                                present:
+                                  type: boolean
+                                tickPolicy:
+                                  type: string
+                                track:
+                                  description: Track the guest or the wall clock.
+                                  type: string
+                        timezone:
+                          type: string
+                        utc:
+                          type: object
+                          properties:
+                            offsetSeconds:
+                              type: integer
+                    cpu:
+                      type: object
+                      properties:
+                        cores:
+                          type: integer
+                          format: int32
+                        dedicatedCpuPlacement:
+                          type: boolean
+                        features:
+                          type: array
+                          items:
+                            description: CPUFeature allows specifying a CPU feature.
+                            type: object
+                            required:
+                              - name
+                            properties:
+                              name:
+                                description: Name of the CPU feature
+                                type: string
+                              policy:
+                                type: string
+                        isolateEmulatorThread:
+                          type: boolean
+                        maxSockets:
+                          type: integer
+                          format: int32
+                        model:
+                          type: string
+                        numa:
+                          type: object
+                          properties:
+                            guestMappingPassthrough:
+                              type: object
+                        realtime:
+                          type: object
+                          properties:
+                            mask:
+                              type: string
+                        sockets:
+                          type: integer
+                          format: int32
+                        threads:
+                          type: integer
+                          format: int32
+                    devices:
+                      type: object
+                      properties:
+                        autoattachGraphicsDevice:
+                          type: boolean
+                        autoattachInputDevice:
+                          type: boolean
+                        autoattachMemBalloon:
+                          type: boolean
+                        autoattachPodInterface:
+                          type: boolean
+                        autoattachSerialConsole:
+                          type: boolean
+                        autoattachVSOCK:
+                          type: boolean
+                        blockMultiQueue:
+                          type: boolean
+                        clientPassthrough:
+                          type: object
+                        disableHotplug:
+                          type: boolean
+                        disks:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - name
+                            properties:
+                              blockSize:
+                                type: object
+                                properties:
+                                  custom:
+                                    type: object
+                                    required:
+                                      - logical
+                                      - physical
+                                    properties:
+                                      logical:
+                                        type: integer
+                                      physical:
+                                        type: integer
+                                  matchVolume:
+                                    type: object
+                                    properties:
+                                      enabled:
+                                        type: boolean
+                              bootOrder:
+                                type: integer
+                              cache:
+                                type: string
+                              cdrom:
+                                description: Attach a volume as a cdrom to the vmi.
+                                type: object
+                                properties:
+                                  bus:
+                                    type: string
+                                  readonly:
+                                    description: ReadOnly. Defaults to true.
+                                    type: boolean
+                                  tray:
+                                    type: string
+                              dedicatedIOThread:
+                                type: boolean
+                              disk:
+                                description: Attach a volume as a disk to the vmi.
+                                type: object
+                                properties:
+                                  bus:
+                                    type: string
+                                  pciAddress:
+                                    type: string
+                                  readonly:
+                                    description: ReadOnly. Defaults to false.
+                                    type: boolean
+                              io:
+                                type: string
+                              lun:
+                                description: Attach a volume as a LUN to the vmi.
+                                type: object
+                                properties:
+                                  bus:
+                                    type: string
+                                  readonly:
+                                    description: ReadOnly. Defaults to false.
+                                    type: boolean
+                                  reservation:
+                                    type: boolean
+                              name:
+                                description: Name is the device name
+                                type: string
+                              serial:
+                                type: string
+                              shareable:
+                                type: boolean
+                              tag:
+                                type: string
+                        filesystems:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - name
+                              - virtiofs
+                            properties:
+                              name:
+                                description: Name is the device name
+                                type: string
+                              virtiofs:
+                                description: Virtiofs is supported
+                                type: object
+                          x-kubernetes-list-type: atomic
+                        gpus:
+                          description: Whether to attach a GPU device to the vmi.
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - deviceName
+                              - name
+                            properties:
+                              deviceName:
+                                type: string
+                              name:
+                                type: string
+                              tag:
+                                type: string
+                              virtualGPUOptions:
+                                type: object
+                                properties:
+                                  display:
+                                    type: object
+                                    properties:
+                                      enabled:
+                                        type: boolean
+                                      ramFB:
+                                        type: object
+                                        properties:
+                                          enabled:
+                                            type: boolean
+                          x-kubernetes-list-type: atomic
+                        hostDevices:
+                          description: Whether to attach a host device to the vmi.
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - deviceName
+                              - name
+                            properties:
+                              deviceName:
+                                type: string
+                              name:
+                                type: string
+                              tag:
+                                type: string
+                          x-kubernetes-list-type: atomic
+                        inputs:
+                          description: Inputs describe input devices
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - name
+                              - type
+                            properties:
+                              bus:
+                                type: string
+                              name:
+                                description: Name is the device name
+                                type: string
+                              type:
+                                type: string
+                        interfaces:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - name
+                            properties:
+                              acpiIndex:
+                                type: integer
+                              bootOrder:
+                                type: integer
+                              bridge:
+                                type: object
+                              dhcpOptions:
+                                type: object
+                                properties:
+                                  bootFileName:
+                                    type: string
+                                  ntpServers:
+                                    type: array
+                                    items:
+                                      type: string
+                                  privateOptions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - option
+                                        - value
+                                      properties:
+                                        option:
+                                          type: integer
+                                        value:
+                                          type: string
+                                  tftpServerName:
+                                    type: string
+                              macAddress:
+                                type: string
+                              macvtap:
+                                type: object
+                              masquerade:
+                                type: object
+                              model:
+                                type: string
+                              name:
+                                type: string
+                              passt:
+                                description: InterfacePasst connects to a given network.
+                                type: object
+                              pciAddress:
+                                type: string
+                              ports:
+                                type: array
+                                items:
+                                  type: object
+                                  required:
+                                    - port
+                                  properties:
+                                    name:
+                                      type: string
+                                    port:
+                                      type: integer
+                                      format: int32
+                                    protocol:
+                                      type: string
+                              slirp:
+                                type: object
+                              sriov:
+                                type: object
+                              state:
+                                type: string
+                              tag:
+                                type: string
+                        networkInterfaceMultiqueue:
+                          type: boolean
+                        rng:
+                          description: Whether to have random number generator from host
+                          type: object
+                        sound:
+                          description: Whether to emulate a sound device.
+                          type: object
+                          required:
+                            - name
+                          properties:
+                            model:
+                              type: string
+                            name:
+                              description: User's defined name for this sound device
+                              type: string
+                        tpm:
+                          description: Whether to emulate a TPM device.
+                          type: object
+                          properties:
+                            persistent:
+                              type: boolean
+                        useVirtioTransitional:
+                          type: boolean
+                        watchdog:
+                          type: object
+                          required:
+                            - name
+                          properties:
+                            i6300esb:
+                              description: i6300esb watchdog device.
+                              type: object
+                              properties:
+                                action:
+                                  type: string
+                            name:
+                              description: Name of the watchdog.
+                              type: string
+                    features:
+                      description: Features like acpi, apic, hyperv, smm.
+                      type: object
+                      properties:
+                        acpi:
+                          type: object
+                          properties:
+                            enabled:
+                              type: boolean
+                        apic:
+                          description: Defaults to the machine type setting.
+                          type: object
+                          properties:
+                            enabled:
+                              type: boolean
+                            endOfInterrupt:
+                              type: boolean
+                        hyperv:
+                          description: Defaults to the machine type setting.
+                          type: object
+                          properties:
+                            evmcs:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            frequencies:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            ipi:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            reenlightenment:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            relaxed:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            reset:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            runtime:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            spinlocks:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                                spinlocks:
+                                  type: integer
+                                  format: int32
+                            synic:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            synictimer:
+                              type: object
+                              properties:
+                                direct:
+                                  type: object
+                                  properties:
+                                    enabled:
+                                      type: boolean
+                                enabled:
+                                  type: boolean
+                            tlbflush:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            vapic:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            vendorid:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                                vendorid:
+                                  type: string
+                            vpindex:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                        kvm:
+                          description: Configure how KVM presence is exposed to the guest.
+                          type: object
+                          properties:
+                            hidden:
+                              type: boolean
+                        pvspinlock:
+                          type: object
+                          properties:
+                            enabled:
+                              type: boolean
+                        smm:
+                          type: object
+                          properties:
+                            enabled:
+                              type: boolean
+                    firmware:
+                      description: Firmware.
+                      type: object
+                      properties:
+                        bootloader:
+                          description: Settings to control the bootloader that is used.
+                          type: object
+                          properties:
+                            bios:
+                              description: If set (default), BIOS will be used.
+                              type: object
+                              properties:
+                                useSerial:
+                                  type: boolean
+                            efi:
+                              description: If set, EFI will be used instead of BIOS.
+                              type: object
+                              properties:
+                                secureBoot:
+                                  type: boolean
+                        kernelBoot:
+                          description: Settings to set the kernel for booting.
+                          type: object
+                          properties:
+                            container:
+                              type: object
+                              required:
+                                - image
+                              properties:
+                                image:
+                                  description: Image that contains initrd / kernel files.
+                                  type: string
+                                imagePullPolicy:
+                                  type: string
+                                imagePullSecret:
+                                  type: string
+                                initrdPath:
+                                  type: string
+                                kernelPath:
+                                  type: string
+                            kernelArgs:
+                              type: string
+                        serial:
+                          description: The system-serial-number in SMBIOS
+                          type: string
+                        uuid:
+                          type: string
+                    ioThreadsPolicy:
+                      type: string
+                    launchSecurity:
+                      description: Launch Security setting of the vmi.
+                      type: object
+                      properties:
+                        sev:
+                          description: AMD Secure Encrypted Virtualization (SEV).
+                          type: object
+                          properties:
+                            policy:
+                              type: object
+                              properties:
+                                encryptedState:
+                                  description: SEV-ES is required. Defaults to false.
+                                  type: boolean
+                    machine:
+                      description: Machine type.
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                    memory:
+                      description: Memory allow specifying the VMI memory features.
+                      type: object
+                      properties:
+                        guest: type: integer
+                            - type: string
+                          x-kubernetes-int-or-string: true
+                        hugepages:
+                          type: object
+                          properties:
+                            pageSize:
+                              type: string
+                    resources:
+                      type: object
+                      properties:
+                        limits:
+                          type: object
+                          additionalProperties:
+                            pattern: >-
+                              ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            anyOf:
+                              - type: integer
+                              - type: string
+                            x-kubernetes-int-or-string: true
+                        overcommitGuestOverhead:
+                          type: boolean
+                        requests:
+                          type: object
+                          additionalProperties:
+                            pattern: >-
+                              ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            anyOf:
+                              - type: integer
+                              - type: string
+                            x-kubernetes-int-or-string: true
+                evictionStrategy:
+                  type: string
+                hostname:
+                  type: string
+                livenessProbe:
+                  type: object
+                  properties:
+                    exec:
+                      type: object
+                      properties:
+                        command:
+                          type: array
+                          items:
+                            type: string
+                    failureThreshold:
+                      type: integer
+                      format: int32
+                    guestAgentPing:
+                      type: object
+                    httpGet:
+                      description: HTTPGet specifies the http request to perform.
+                      type: object
+                      required:
+                        - port
+                      properties:
+                        host:
+                          type: string
+                        httpHeaders:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - name
+                              - value
+                            properties:
+                              name:
+                                description: The header field name
+                                type: string
+                              value:
+                                description: The header field value
+                                type: string
+                        path:
+                          description: Path to access on the HTTP server.
+                          type: string
+                        port: type: integer
+                            - type: string
+                          x-kubernetes-int-or-string: true
+                        scheme:
+                          type: string
+                    initialDelaySeconds:
+                      type: integer
+                      format: int32
+                    periodSeconds:
+                      type: integer
+                      format: int32
+                    successThreshold:
+                      type: integer
+                      format: int32
+                    tcpSocket:
+                      type: object
+                      required:
+                        - port
+                      properties:
+                        host:
+                          type: string
+                        port: type: integer
+                            - type: string
+                          x-kubernetes-int-or-string: true
+                    timeoutSeconds:
+                      type: integer
+                      format: int32
+                networks:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - name
+                    properties:
+                      multus:
+                        description: Represents the multus cni network.
+                        type: object
+                        required:
+                          - networkName
+                        properties:
+                          default:
+                            type: boolean
+                          networkName:
+                            type: string
+                      name:
+                        type: string
+                      pod:
+                        description: Represents the stock pod network interface.
+                        type: object
+                        properties:
+                          vmIPv6NetworkCIDR:
+                            type: string
+                          vmNetworkCIDR:
+                            type: string
+                nodeSelector:
+                  type: object
+                  additionalProperties:
+                    type: string
+                priorityClassName:
+                  type: string
+                readinessProbe:
+                  type: object
+                  properties:
+                    exec:
+                      type: object
+                      properties:
+                        command:
+                          type: array
+                          items:
+                            type: string
+                    failureThreshold:
+                      type: integer
+                      format: int32
+                    guestAgentPing:
+                      type: object
+                    httpGet:
+                      description: HTTPGet specifies the http request to perform.
+                      type: object
+                      required:
+                        - port
+                      properties:
+                        host:
+                          type: string
+                        httpHeaders:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - name
+                              - value
+                            properties:
+                              name:
+                                description: The header field name
+                                type: string
+                              value:
+                                description: The header field value
+                                type: string
+                        path:
+                          description: Path to access on the HTTP server.
+                          type: string
+                        port: type: integer
+                            - type: string
+                          x-kubernetes-int-or-string: true
+                        scheme:
+                          type: string
+                    initialDelaySeconds:
+                      type: integer
+                      format: int32
+                    periodSeconds:
+                      type: integer
+                      format: int32
+                    successThreshold:
+                      type: integer
+                      format: int32
+                    tcpSocket:
+                      type: object
+                      required:
+                        - port
+                      properties:
+                        host:
+                          type: string
+                        port: type: integer
+                            - type: string
+                          x-kubernetes-int-or-string: true
+                    timeoutSeconds:
+                      type: integer
+                      format: int32
+                schedulerName:
+                  type: string
+                startStrategy:
+                  type: string
+                subdomain:
+                  type: string
+                terminationGracePeriodSeconds:
+                  type: integer
+                  format: int64
+                tolerations:
+                  description: If toleration is specified, obey all the toleration rules.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      effect:
+                        type: string
+                      key:
+                        type: string
+                      operator:
+                        type: string
+                      tolerationSeconds:
+                        type: integer
+                        format: int64
+                      value:
+                        type: string
+                topologySpreadConstraints:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - maxSkew
+                      - topologyKey
+                      - whenUnsatisfiable
+                    properties:
+                      labelSelector:
+                        type: object
+                        properties:
+                          matchExpressions:
+                            type: array
+                            items:
+                              type: object
+                              required:
+                                - key
+                                - operator
+                              properties:
+                                key:
+                                  type: string
+                                operator:
+                                  type: string
+                                values:
+                                  type: array
+                                  items:
+                                    type: string
+                          matchLabels:
+                            type: object
+                            additionalProperties:
+                              type: string
+                      matchLabelKeys:
+                        type: array
+                        items:
+                          type: string
+                        x-kubernetes-list-type: atomic
+                      maxSkew:
+                        type: integer
+                        format: int32
+                      minDomains:
+                        type: integer
+                        format: int32
+                      nodeAffinityPolicy:
+                        type: string
+                      nodeTaintsPolicy:
+                        type: string
+                      topologyKey:
+                        type: string
+                      whenUnsatisfiable:
+                        type: string
+                  x-kubernetes-list-map-keys:
+                    - topologyKey
+                    - whenUnsatisfiable
+                  x-kubernetes-list-type: map
+                volumes:
+                  type: array
+                  items:
+                    description: Volume represents a named volume in a vmi.
+                    type: object
+                    required:
+                      - name
+                    properties:
+                      cloudInitConfigDrive:
+                        type: object
+                        properties:
+                          networkData:
+                            type: string
+                          networkDataBase64:
+                            type: string
+                          networkDataSecretRef:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                          secretRef:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                          userData:
+                            type: string
+                          userDataBase64:
+                            type: string
+                      cloudInitNoCloud:
+                        type: object
+                        properties:
+                          networkData:
+                            type: string
+                          networkDataBase64:
+                            type: string
+                          networkDataSecretRef:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                          secretRef:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                          userData:
+                            type: string
+                          userDataBase64:
+                            type: string
+                      configMap:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          optional:
+                            type: boolean
+                          volumeLabel:
+                            type: string
+                      containerDisk:
+                        type: object
+                        required:
+                          - image
+                        properties:
+                          image:
+                            type: string
+                          imagePullPolicy:
+                            type: string
+                          imagePullSecret:
+                            type: string
+                          path:
+                            type: string
+                      dataVolume:
+                        type: object
+                        required:
+                          - name
+                        properties:
+                          hotpluggable:
+                            type: boolean
+                          name:
+                            type: string
+                      downwardAPI:
+                        type: object
+                        properties:
+                          fields:
+                            description: Fields is a list of downward API volume file
+                            type: array
+                            items:
+                              type: object
+                              required:
+                                - path
+                              properties:
+                                fieldRef:
+                                  type: object
+                                  required:
+                                    - fieldPath
+                                  properties:
+                                    apiVersion:
+                                      type: string
+                                    fieldPath:
+                                      type: string
+                                mode:
+                                  type: integer
+                                  format: int32
+                                path:
+                                  type: string
+                                resourceFieldRef:
+                                  type: object
+                                  required:
+                                    - resource
+                                  properties:
+                                    containerName:
+                                      type: string
+                                    divisor: type: integer
+                                        - type: string
+                                      x-kubernetes-int-or-string: true
+                                    resource:
+                                      description: 'Required: resource to select'
+                                      type: string
+                          volumeLabel:
+                            type: string
+                      downwardMetrics:
+                        type: object
+                      emptyDisk:
+                        type: object
+                        required:
+                          - capacity
+                        properties:
+                          capacity:
+                            description: Capacity of the sparse disk.
+                            pattern: >-
+                              ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            anyOf:
+                              - type: integer
+                              - type: string
+                            x-kubernetes-int-or-string: true
+                      ephemeral:
+                        type: object
+                        properties:
+                          persistentVolumeClaim:
+                            type: object
+                            required:
+                              - claimName
+                            properties:
+                              claimName:
+                                type: string
+                              readOnly:
+                                type: boolean
+                      hostDisk:
+                        type: object
+                        required:
+                          - path
+                          - type
+                        properties:
+                          capacity:
+                            description: Capacity of the sparse disk
+                            pattern: >-
+                              ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            anyOf:
+                              - type: integer
+                              - type: string
+                            x-kubernetes-int-or-string: true
+                          path:
+                            description: The path to HostDisk image located on the cluster
+                            type: string
+                          shared:
+                            type: boolean
+                          type:
+                            type: string
+                      memoryDump:
+                        type: object
+                        required:
+                          - claimName
+                        properties:
+                          claimName:
+                            type: string
+                          hotpluggable:
+                            type: boolean
+                          readOnly:
+                            type: boolean
+                      name:
+                        type: string
+                      persistentVolumeClaim:
+                        type: object
+                        required:
+                          - claimName
+                        properties:
+                          claimName:
+                            type: string
+                          hotpluggable:
+                            type: boolean
+                          readOnly:
+                            type: boolean
+                      secret:
+                        type: object
+                        properties:
+                          optional:
+                            type: boolean
+                          secretName:
+                            type: string
+                          volumeLabel:
+                            type: string
+                      serviceAccount:
+                        type: object
+                        properties:
+                          serviceAccountName:
+                            type: string
+                      sysprep:
+                        description: Represents a Sysprep volume source.
+                        type: object
+                        properties:
+                          configMap:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                          secret:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+            status:
+              type: object
+              properties:
+                VSOCKCID:
+                  description: VSOCKCID is used to track the allocated VSOCK CID in the VM.
+                  type: integer
+                  format: int32
+                activePods:
+                  type: object
+                  additionalProperties:
+                    type: string
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - status
+                      - type
+                    properties:
+                      lastProbeTime:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      lastTransitionTime:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      message:
+                        type: string
+                      reason:
+                        type: string
+                      status:
+                        type: string
+                      type:
+                        type: string
+                currentCPUTopology:
+                  type: object
+                  properties:
+                    cores:
+                      type: integer
+                      format: int32
+                    sockets:
+                      type: integer
+                      format: int32
+                    threads:
+                      type: integer
+                      format: int32
+                evacuationNodeName:
+                  type: string
+                fsFreezeStatus:
+                  type: string
+                guestOSInfo:
+                  description: Guest OS Information
+                  type: object
+                  properties:
+                    id:
+                      description: Guest OS Id
+                      type: string
+                    kernelRelease:
+                      description: Guest OS Kernel Release
+                      type: string
+                    kernelVersion:
+                      description: Kernel version of the Guest OS
+                      type: string
+                    machine:
+                      description: Machine type of the Guest OS
+                      type: string
+                    name:
+                      description: Name of the Guest OS
+                      type: string
+                    prettyName:
+                      description: Guest OS Pretty Name
+                      type: string
+                    version:
+                      description: Guest OS Version
+                      type: string
+                    versionId:
+                      description: Version ID of the Guest OS
+                      type: string
+                interfaces:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      infoSource:
+                        type: string
+                      interfaceName:
+                        description: The interface name inside the Virtual Machine
+                        type: string
+                      ipAddress:
+                        type: string
+                      ipAddresses:
+                        type: array
+                        items:
+                          type: string
+                      mac:
+                        description: Hardware address of a Virtual Machine interface
+                        type: string
+                      name:
+                        type: string
+                      queueCount:
+                        description: Specifies how many queues are allocated by MultiQueue
+                        type: integer
+                        format: int32
+                launcherContainerImageVersion:
+                  type: string
+                machine:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                migrationMethod:
+                  type: string
+                migrationState:
+                  description: Represents the status of a live migration
+                  type: object
+                  properties:
+                    abortRequested:
+                      description: Indicates that the migration has been requested to abort
+                      type: boolean
+                    abortStatus:
+                      type: string
+                    completed:
+                      description: Indicates the migration completed
+                      type: boolean
+                    endTimestamp:
+                      description: The time the migration action ended
+                      type: string
+                      format: date-time
+                      nullable: true
+                    failed:
+                      description: Indicates that the migration failed
+                      type: boolean
+                    migrationConfiguration:
+                      description: Migration configurations to apply
+                      type: object
+                      properties:
+                        allowAutoConverge:
+                          type: boolean
+                        allowPostCopy:
+                          type: boolean
+                        bandwidthPerMigration: type: integer
+                            - type: string
+                          x-kubernetes-int-or-string: true
+                        completionTimeoutPerGiB:
+                          type: integer
+                          format: int64
+                        disableTLS:
+                          type: boolean
+                        matchSELinuxLevelOnMigration:
+                          type: boolean
+                        network:
+                          type: string
+                        nodeDrainTaintKey:
+                          type: string
+                        parallelMigrationsPerCluster:
+                          type: integer
+                          format: int32
+                        parallelOutboundMigrationsPerNode:
+                          type: integer
+                          format: int32
+                        progressTimeout:
+                          type: integer
+                          format: int64
+                        unsafeMigrationOverride:
+                          type: boolean
+                    migrationPolicyName:
+                      type: string
+                    migrationUid:
+                      type: string
+                    mode:
+                      type: string
+                    sourceNode:
+                      description: The source node that the VMI originated on
+                      type: string
+                    startTimestamp:
+                      description: The time the migration action began
+                      type: string
+                      format: date-time
+                      nullable: true
+                    targetAttachmentPodUID:
+                      description: The UID of the target attachment pod for hotplug volumes
+                      type: string
+                    targetCPUSet:
+                      type: array
+                      items:
+                        type: integer
+                      x-kubernetes-list-type: atomic
+                    targetDirectMigrationNodePorts:
+                      type: object
+                      additionalProperties:
+                        type: integer
+                    targetNode:
+                      description: The target node that the VMI is moving to
+                      type: string
+                    targetNodeAddress:
+                      description: The address of the target node to use for the migration
+                      type: string
+                    targetNodeDomainDetected:
+                      description: The Target Node has seen the Domain Start Event
+                      type: boolean
+                    targetNodeDomainReadyTimestamp:
+                      type: string
+                      format: date-time
+                    targetNodeTopology:
+                      type: string
+                    targetPod:
+                      description: The target pod that the VMI is moving to
+                      type: string
+                migrationTransport:
+                  description: This represents the migration transport
+                  type: string
+                nodeName:
+                  type: string
+                phase:
+                  type: string
+                phaseTransitionTimestamps:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      phase:
+                        type: string
+                      phaseTransitionTimestamp:
+                        type: string
+                        format: date-time
+                  x-kubernetes-list-type: atomic
+                qosClass:
+                  type: string
+                reason:
+                  type: string
+                runtimeUser:
+                  type: integer
+                  format: int64
+                selinuxContext:
+                  type: string
+                topologyHints:
+                  type: object
+                  properties:
+                    tscFrequency:
+                      type: integer
+                      format: int64
+                virtualMachineRevisionName:
+                  type: string
+                volumeStatus:
+                  description: VolumeStatus contains the statuses of all the volumes
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - name
+                      - target
+                    properties:
+                      hotplugVolume:
+                        type: object
+                        properties:
+                          attachPodName:
+                            type: string
+                          attachPodUID:
+                            type: string
+                      memoryDumpVolume:
+                        type: object
+                        properties:
+                          claimName:
+                            type: string
+                          endTimestamp:
+                            type: string
+                            format: date-time
+                          startTimestamp:
+                            type: string
+                            format: date-time
+                          targetFileName:
+                            type: string
+                      message:
+                        type: string
+                      name:
+                        description: Name is the name of the volume
+                        type: string
+                      persistentVolumeClaimInfo:
+                        type: object
+                        properties:
+                          accessModes:
+                            type: array
+                            items:
+                              type: string
+                            x-kubernetes-list-type: atomic
+                          capacity:
+                            type: object
+                            additionalProperties:
+                              pattern: >-
+                                ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              anyOf:
+                                - type: integer
+                                - type: string
+                              x-kubernetes-int-or-string: true
+                          filesystemOverhead:
+                            type: string
+                            pattern: ^(0(?:\.\d{1,3})?|1)$
+                          preallocated:
+                            type: boolean
+                          requests:
+                            type: object
+                            additionalProperties:
+                              pattern: >-
+                                ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              anyOf:
+                                - type: integer
+                                - type: string
+                              x-kubernetes-int-or-string: true
+                          volumeMode:
+                            type: string
+                      phase:
+                        description: Phase is the phase
+                        type: string
+                      reason:
+                        type: string
+                      size:
+                        description: Represents the size of the volume
+                        type: integer
+                        format: int64
+                      target:
+                        type: string
+                  x-kubernetes-list-type: atomic
+      additionalPrinterColumns:
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: IP
+          type: string
+          jsonPath: .status.interfaces[0].ipAddress
+        - name: NodeName
+          type: string
+          jsonPath: .status.nodeName
+        - name: Ready
+          type: string
+          jsonPath: .status.conditions[?(@.type=='Ready')].status
+        - name: Live-Migratable
+          type: string
+          priority: 1
+          jsonPath: .status.conditions[?(@.type=='LiveMigratable')].status
+        - name: Paused
+          type: string
+          priority: 1
+          jsonPath: .status.conditions[?(@.type=='Paused')].status
+    - name: v1alpha3
+      served: true
+      storage: false
+      deprecated: true
+      deprecationWarning: >-
+        kubevirt.io/v1alpha3 is now deprecated and will be removed in a future
+        release.
+      schema:
+        openAPIV3Schema:
+          type: object
+          required:
+            - spec
+          properties:
+            apiVersion:
+              type: string
+            kind:
+              type: string
+            metadata:
+              type: object
+            spec:
+              type: object
+              required:
+                - domain
+              properties:
+                accessCredentials:
+                  description: Specifies a set of public keys to inject into the vm guest
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      sshPublicKey:
+                        type: object
+                        required:
+                          - propagationMethod
+                          - source
+                        properties:
+                          propagationMethod:
+                            type: object
+                            properties:
+                              configDrive:
+                                type: object
+                              qemuGuestAgent:
+                                type: object
+                                required:
+                                  - users
+                                properties:
+                                  users:
+                                    type: array
+                                    items:
+                                      type: string
+                                    x-kubernetes-list-type: set
+                          source:
+                            type: object
+                            properties:
+                              secret:
+                                type: object
+                                required:
+                                  - secretName
+                                properties:
+                                  secretName:
+                                    type: string
+                      userPassword:
+                        type: object
+                        required:
+                          - propagationMethod
+                          - source
+                        properties:
+                          propagationMethod:
+                            type: object
+                            properties:
+                              qemuGuestAgent:
+                                type: object
+                          source:
+                            type: object
+                            properties:
+                              secret:
+                                type: object
+                                required:
+                                  - secretName
+                                properties:
+                                  secretName:
+                                    type: string
+                  x-kubernetes-list-type: atomic
+                affinity:
+                  description: If affinity is specifies, obey all the affinity rules
+                  type: object
+                  properties:
+                    nodeAffinity:
+                      description: Describes node affinity scheduling rules for the pod.
+                      type: object
+                      properties:
+                        preferredDuringSchedulingIgnoredDuringExecution:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - preference
+                              - weight
+                            properties:
+                              preference:
+                                type: object
+                                properties:
+                                  matchExpressions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                                  matchFields:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                              weight:
+                                type: integer
+                                format: int32
+                        requiredDuringSchedulingIgnoredDuringExecution:
+                          type: object
+                          required:
+                            - nodeSelectorTerms
+                          properties:
+                            nodeSelectorTerms:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  matchExpressions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                                  matchFields:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                    podAffinity:
+                      type: object
+                      properties:
+                        preferredDuringSchedulingIgnoredDuringExecution:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - podAffinityTerm
+                              - weight
+                            properties:
+                              podAffinityTerm:
+                                type: object
+                                required:
+                                  - topologyKey
+                                properties:
+                                  labelSelector:
+                                    type: object
+                                    properties:
+                                      matchExpressions:
+                                        type: array
+                                        items:
+                                          type: object
+                                          required:
+                                            - key
+                                            - operator
+                                          properties:
+                                            key:
+                                              type: string
+                                            operator:
+                                              type: string
+                                            values:
+                                              type: array
+                                              items:
+                                                type: string
+                                      matchLabels:
+                                        type: object
+                                        additionalProperties:
+                                          type: string
+                                  namespaceSelector:
+                                    type: object
+                                    properties:
+                                      matchExpressions:
+                                        type: array
+                                        items:
+                                          type: object
+                                          required:
+                                            - key
+                                            - operator
+                                          properties:
+                                            key:
+                                              type: string
+                                            operator:
+                                              type: string
+                                            values:
+                                              type: array
+                                              items:
+                                                type: string
+                                      matchLabels:
+                                        type: object
+                                        additionalProperties:
+                                          type: string
+                                  namespaces:
+                                    type: array
+                                    items:
+                                      type: string
+                                  topologyKey:
+                                    type: string
+                              weight:
+                                type: integer
+                                format: int32
+                        requiredDuringSchedulingIgnoredDuringExecution:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - topologyKey
+                            properties:
+                              labelSelector:
+                                type: object
+                                properties:
+                                  matchExpressions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                                  matchLabels:
+                                    type: object
+                                    additionalProperties:
+                                      type: string
+                              namespaceSelector:
+                                type: object
+                                properties:
+                                  matchExpressions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                                  matchLabels:
+                                    type: object
+                                    additionalProperties:
+                                      type: string
+                              namespaces:
+                                type: array
+                                items:
+                                  type: string
+                              topologyKey:
+                                type: string
+                    podAntiAffinity:
+                      type: object
+                      properties:
+                        preferredDuringSchedulingIgnoredDuringExecution:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - podAffinityTerm
+                              - weight
+                            properties:
+                              podAffinityTerm:
+                                type: object
+                                required:
+                                  - topologyKey
+                                properties:
+                                  labelSelector:
+                                    type: object
+                                    properties:
+                                      matchExpressions:
+                                        type: array
+                                        items:
+                                          type: object
+                                          required:
+                                            - key
+                                            - operator
+                                          properties:
+                                            key:
+                                              type: string
+                                            operator:
+                                              type: string
+                                            values:
+                                              type: array
+                                              items:
+                                                type: string
+                                      matchLabels:
+                                        type: object
+                                        additionalProperties:
+                                          type: string
+                                  namespaceSelector:
+                                    type: object
+                                    properties:
+                                      matchExpressions:
+                                        type: array
+                                        items:
+                                          type: object
+                                          required:
+                                            - key
+                                            - operator
+                                          properties:
+                                            key:
+                                              type: string
+                                            operator:
+                                              type: string
+                                            values:
+                                              type: array
+                                              items:
+                                                type: string
+                                      matchLabels:
+                                        type: object
+                                        additionalProperties:
+                                          type: string
+                                  namespaces:
+                                    type: array
+                                    items:
+                                      type: string
+                                  topologyKey:
+                                    type: string
+                              weight:
+                                type: integer
+                                format: int32
+                        requiredDuringSchedulingIgnoredDuringExecution:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - topologyKey
+                            properties:
+                              labelSelector:
+                                type: object
+                                properties:
+                                  matchExpressions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                                  matchLabels:
+                                    type: object
+                                    additionalProperties:
+                                      type: string
+                              namespaceSelector:
+                                type: object
+                                properties:
+                                  matchExpressions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - key
+                                        - operator
+                                      properties:
+                                        key:
+                                          type: string
+                                        operator:
+                                          type: string
+                                        values:
+                                          type: array
+                                          items:
+                                            type: string
+                                  matchLabels:
+                                    type: object
+                                    additionalProperties:
+                                      type: string
+                              namespaces:
+                                type: array
+                                items:
+                                  type: string
+                              topologyKey:
+                                type: string
+                architecture:
+                  type: string
+                dnsConfig:
+                  type: object
+                  properties:
+                    nameservers:
+                      type: array
+                      items:
+                        type: string
+                    options:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            description: Required.
+                            type: string
+                          value:
+                            type: string
+                    searches:
+                      type: array
+                      items:
+                        type: string
+                dnsPolicy:
+                  type: string
+                domain:
+                  type: object
+                  required:
+                    - devices
+                  properties:
+                    chassis:
+                      description: Chassis specifies the chassis info passed to the domain.
+                      type: object
+                      properties:
+                        asset:
+                          type: string
+                        manufacturer:
+                          type: string
+                        serial:
+                          type: string
+                        sku:
+                          type: string
+                        version:
+                          type: string
+                    clock:
+                      description: Clock sets the clock and timers of the vmi.
+                      type: object
+                      properties:
+                        timer:
+                          description: Timer specifies whih timers are attached to the vmi.
+                          type: object
+                          properties:
+                            hpet:
+                              type: object
+                              properties:
+                                present:
+                                  type: boolean
+                                tickPolicy:
+                                  type: string
+                            hyperv:
+                              type: object
+                              properties:
+                                present:
+                                  type: boolean
+                            kvm:
+                              description: "KVM \t(KVM clock) - lets guests read the host’s wall clock time (paravirtualized). For linux guests."
+                              type: object
+                              properties:
+                                present:
+                                  type: boolean
+                            pit:
+                              type: object
+                              properties:
+                                present:
+                                  type: boolean
+                                tickPolicy:
+                                  type: string
+                            rtc:
+                              type: object
+                              properties:
+                                present:
+                                  type: boolean
+                                tickPolicy:
+                                  type: string
+                                track:
+                                  description: Track the guest or the wall clock.
+                                  type: string
+                        timezone:
+                          type: string
+                        utc:
+                          type: object
+                          properties:
+                            offsetSeconds:
+                              type: integer
+                    cpu:
+                      type: object
+                      properties:
+                        cores:
+                          type: integer
+                          format: int32
+                        dedicatedCpuPlacement:
+                          type: boolean
+                        features:
+                          type: array
+                          items:
+                            description: CPUFeature allows specifying a CPU feature.
+                            type: object
+                            required:
+                              - name
+                            properties:
+                              name:
+                                description: Name of the CPU feature
+                                type: string
+                              policy:
+                                type: string
+                        isolateEmulatorThread:
+                          type: boolean
+                        maxSockets:
+                          type: integer
+                          format: int32
+                        model:
+                          type: string
+                        numa:
+                          type: object
+                          properties:
+                            guestMappingPassthrough:
+                              type: object
+                        realtime:
+                          type: object
+                          properties:
+                            mask:
+                              type: string
+                        sockets:
+                          type: integer
+                          format: int32
+                        threads:
+                          type: integer
+                          format: int32
+                    devices:
+                      type: object
+                      properties:
+                        autoattachGraphicsDevice:
+                          type: boolean
+                        autoattachInputDevice:
+                          type: boolean
+                        autoattachMemBalloon:
+                          type: boolean
+                        autoattachPodInterface:
+                          type: boolean
+                        autoattachSerialConsole:
+                          type: boolean
+                        autoattachVSOCK:
+                          type: boolean
+                        blockMultiQueue:
+                          type: boolean
+                        clientPassthrough:
+                          type: object
+                        disableHotplug:
+                          type: boolean
+                        disks:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - name
+                            properties:
+                              blockSize:
+                                type: object
+                                properties:
+                                  custom:
+                                    type: object
+                                    required:
+                                      - logical
+                                      - physical
+                                    properties:
+                                      logical:
+                                        type: integer
+                                      physical:
+                                        type: integer
+                                  matchVolume:
+                                    type: object
+                                    properties:
+                                      enabled:
+                                        type: boolean
+                              bootOrder:
+                                type: integer
+                              cache:
+                                type: string
+                              cdrom:
+                                description: Attach a volume as a cdrom to the vmi.
+                                type: object
+                                properties:
+                                  bus:
+                                    type: string
+                                  readonly:
+                                    description: ReadOnly. Defaults to true.
+                                    type: boolean
+                                  tray:
+                                    type: string
+                              dedicatedIOThread:
+                                type: boolean
+                              disk:
+                                description: Attach a volume as a disk to the vmi.
+                                type: object
+                                properties:
+                                  bus:
+                                    type: string
+                                  pciAddress:
+                                    type: string
+                                  readonly:
+                                    description: ReadOnly. Defaults to false.
+                                    type: boolean
+                              io:
+                                type: string
+                              lun:
+                                description: Attach a volume as a LUN to the vmi.
+                                type: object
+                                properties:
+                                  bus:
+                                    type: string
+                                  readonly:
+                                    description: ReadOnly. Defaults to false.
+                                    type: boolean
+                                  reservation:
+                                    type: boolean
+                              name:
+                                description: Name is the device name
+                                type: string
+                              serial:
+                                type: string
+                              shareable:
+                                type: boolean
+                              tag:
+                                type: string
+                        filesystems:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - name
+                              - virtiofs
+                            properties:
+                              name:
+                                description: Name is the device name
+                                type: string
+                              virtiofs:
+                                description: Virtiofs is supported
+                                type: object
+                          x-kubernetes-list-type: atomic
+                        gpus:
+                          description: Whether to attach a GPU device to the vmi.
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - deviceName
+                              - name
+                            properties:
+                              deviceName:
+                                type: string
+                              name:
+                                type: string
+                              tag:
+                                type: string
+                              virtualGPUOptions:
+                                type: object
+                                properties:
+                                  display:
+                                    type: object
+                                    properties:
+                                      enabled:
+                                        type: boolean
+                                      ramFB:
+                                        type: object
+                                        properties:
+                                          enabled:
+                                            type: boolean
+                          x-kubernetes-list-type: atomic
+                        hostDevices:
+                          description: Whether to attach a host device to the vmi.
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - deviceName
+                              - name
+                            properties:
+                              deviceName:
+                                type: string
+                              name:
+                                type: string
+                              tag:
+                                type: string
+                          x-kubernetes-list-type: atomic
+                        inputs:
+                          description: Inputs describe input devices
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - name
+                              - type
+                            properties:
+                              bus:
+                                type: string
+                              name:
+                                description: Name is the device name
+                                type: string
+                              type:
+                                type: string
+                        interfaces:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - name
+                            properties:
+                              acpiIndex:
+                                type: integer
+                              bootOrder:
+                                type: integer
+                              bridge:
+                                type: object
+                              dhcpOptions:
+                                type: object
+                                properties:
+                                  bootFileName:
+                                    type: string
+                                  ntpServers:
+                                    type: array
+                                    items:
+                                      type: string
+                                  privateOptions:
+                                    type: array
+                                    items:
+                                      type: object
+                                      required:
+                                        - option
+                                        - value
+                                      properties:
+                                        option:
+                                          type: integer
+                                        value:
+                                          type: string
+                                  tftpServerName:
+                                    type: string
+                              macAddress:
+                                type: string
+                              macvtap:
+                                type: object
+                              masquerade:
+                                type: object
+                              model:
+                                type: string
+                              name:
+                                type: string
+                              passt:
+                                description: InterfacePasst connects to a given network.
+                                type: object
+                              pciAddress:
+                                type: string
+                              ports:
+                                type: array
+                                items:
+                                  type: object
+                                  required:
+                                    - port
+                                  properties:
+                                    name:
+                                      type: string
+                                    port:
+                                      type: integer
+                                      format: int32
+                                    protocol:
+                                      type: string
+                              slirp:
+                                type: object
+                              sriov:
+                                type: object
+                              state:
+                                type: string
+                              tag:
+                                type: string
+                        networkInterfaceMultiqueue:
+                          type: boolean
+                        rng:
+                          description: Whether to have random number generator from host
+                          type: object
+                        sound:
+                          description: Whether to emulate a sound device.
+                          type: object
+                          required:
+                            - name
+                          properties:
+                            model:
+                              type: string
+                            name:
+                              description: User's defined name for this sound device
+                              type: string
+                        tpm:
+                          description: Whether to emulate a TPM device.
+                          type: object
+                          properties:
+                            persistent:
+                              type: boolean
+                        useVirtioTransitional:
+                          type: boolean
+                        watchdog:
+                          type: object
+                          required:
+                            - name
+                          properties:
+                            i6300esb:
+                              description: i6300esb watchdog device.
+                              type: object
+                              properties:
+                                action:
+                                  type: string
+                            name:
+                              description: Name of the watchdog.
+                              type: string
+                    features:
+                      description: Features like acpi, apic, hyperv, smm.
+                      type: object
+                      properties:
+                        acpi:
+                          type: object
+                          properties:
+                            enabled:
+                              type: boolean
+                        apic:
+                          description: Defaults to the machine type setting.
+                          type: object
+                          properties:
+                            enabled:
+                              type: boolean
+                            endOfInterrupt:
+                              type: boolean
+                        hyperv:
+                          description: Defaults to the machine type setting.
+                          type: object
+                          properties:
+                            evmcs:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            frequencies:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            ipi:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            reenlightenment:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            relaxed:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            reset:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            runtime:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            spinlocks:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                                spinlocks:
+                                  type: integer
+                                  format: int32
+                            synic:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            synictimer:
+                              type: object
+                              properties:
+                                direct:
+                                  type: object
+                                  properties:
+                                    enabled:
+                                      type: boolean
+                                enabled:
+                                  type: boolean
+                            tlbflush:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            vapic:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                            vendorid:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                                vendorid:
+                                  type: string
+                            vpindex:
+                              type: object
+                              properties:
+                                enabled:
+                                  type: boolean
+                        kvm:
+                          description: Configure how KVM presence is exposed to the guest.
+                          type: object
+                          properties:
+                            hidden:
+                              type: boolean
+                        pvspinlock:
+                          type: object
+                          properties:
+                            enabled:
+                              type: boolean
+                        smm:
+                          type: object
+                          properties:
+                            enabled:
+                              type: boolean
+                    firmware:
+                      description: Firmware.
+                      type: object
+                      properties:
+                        bootloader:
+                          description: Settings to control the bootloader that is used.
+                          type: object
+                          properties:
+                            bios:
+                              description: If set (default), BIOS will be used.
+                              type: object
+                              properties:
+                                useSerial:
+                                  type: boolean
+                            efi:
+                              description: If set, EFI will be used instead of BIOS.
+                              type: object
+                              properties:
+                                secureBoot:
+                                  type: boolean
+                        kernelBoot:
+                          description: Settings to set the kernel for booting.
+                          type: object
+                          properties:
+                            container:
+                              type: object
+                              required:
+                                - image
+                              properties:
+                                image:
+                                  description: Image that contains initrd / kernel files.
+                                  type: string
+                                imagePullPolicy:
+                                  type: string
+                                imagePullSecret:
+                                  type: string
+                                initrdPath:
+                                  type: string
+                                kernelPath:
+                                  type: string
+                            kernelArgs:
+                              type: string
+                        serial:
+                          description: The system-serial-number in SMBIOS
+                          type: string
+                        uuid:
+                          type: string
+                    ioThreadsPolicy:
+                      type: string
+                    launchSecurity:
+                      description: Launch Security setting of the vmi.
+                      type: object
+                      properties:
+                        sev:
+                          description: AMD Secure Encrypted Virtualization (SEV).
+                          type: object
+                          properties:
+                            policy:
+                              type: object
+                              properties:
+                                encryptedState:
+                                  description: SEV-ES is required. Defaults to false.
+                                  type: boolean
+                    machine:
+                      description: Machine type.
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                    memory:
+                      description: Memory allow specifying the VMI memory features.
+                      type: object
+                      properties:
+                        guest: type: integer
+                            - type: string
+                          x-kubernetes-int-or-string: true
+                        hugepages:
+                          type: object
+                          properties:
+                            pageSize:
+                              type: string
+                    resources:
+                      type: object
+                      properties:
+                        limits:
+                          type: object
+                          additionalProperties:
+                            pattern: >-
+                              ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            anyOf:
+                              - type: integer
+                              - type: string
+                            x-kubernetes-int-or-string: true
+                        overcommitGuestOverhead:
+                          type: boolean
+                        requests:
+                          type: object
+                          additionalProperties:
+                            pattern: >-
+                              ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            anyOf:
+                              - type: integer
+                              - type: string
+                            x-kubernetes-int-or-string: true
+                evictionStrategy:
+                  type: string
+                hostname:
+                  type: string
+                livenessProbe:
+                  type: object
+                  properties:
+                    exec:
+                      type: object
+                      properties:
+                        command:
+                          type: array
+                          items:
+                            type: string
+                    failureThreshold:
+                      type: integer
+                      format: int32
+                    guestAgentPing:
+                      type: object
+                    httpGet:
+                      description: HTTPGet specifies the http request to perform.
+                      type: object
+                      required:
+                        - port
+                      properties:
+                        host:
+                          type: string
+                        httpHeaders:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - name
+                              - value
+                            properties:
+                              name:
+                                description: The header field name
+                                type: string
+                              value:
+                                description: The header field value
+                                type: string
+                        path:
+                          description: Path to access on the HTTP server.
+                          type: string
+                        port: type: integer
+                            - type: string
+                          x-kubernetes-int-or-string: true
+                        scheme:
+                          type: string
+                    initialDelaySeconds:
+                      type: integer
+                      format: int32
+                    periodSeconds:
+                      type: integer
+                      format: int32
+                    successThreshold:
+                      type: integer
+                      format: int32
+                    tcpSocket:
+                      type: object
+                      required:
+                        - port
+                      properties:
+                        host:
+                          type: string
+                        port: type: integer
+                            - type: string
+                          x-kubernetes-int-or-string: true
+                    timeoutSeconds:
+                      type: integer
+                      format: int32
+                networks:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - name
+                    properties:
+                      multus:
+                        description: Represents the multus cni network.
+                        type: object
+                        required:
+                          - networkName
+                        properties:
+                          default:
+                            type: boolean
+                          networkName:
+                            type: string
+                      name:
+                        type: string
+                      pod:
+                        description: Represents the stock pod network interface.
+                        type: object
+                        properties:
+                          vmIPv6NetworkCIDR:
+                            type: string
+                          vmNetworkCIDR:
+                            type: string
+                nodeSelector:
+                  type: object
+                  additionalProperties:
+                    type: string
+                priorityClassName:
+                  type: string
+                readinessProbe:
+                  type: object
+                  properties:
+                    exec:
+                      type: object
+                      properties:
+                        command:
+                          type: array
+                          items:
+                            type: string
+                    failureThreshold:
+                      type: integer
+                      format: int32
+                    guestAgentPing:
+                      type: object
+                    httpGet:
+                      description: HTTPGet specifies the http request to perform.
+                      type: object
+                      required:
+                        - port
+                      properties:
+                        host:
+                          type: string
+                        httpHeaders:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - name
+                              - value
+                            properties:
+                              name:
+                                description: The header field name
+                                type: string
+                              value:
+                                description: The header field value
+                                type: string
+                        path:
+                          description: Path to access on the HTTP server.
+                          type: string
+                        port: type: integer
+                            - type: string
+                          x-kubernetes-int-or-string: true
+                        scheme:
+                          type: string
+                    initialDelaySeconds:
+                      type: integer
+                      format: int32
+                    periodSeconds:
+                      type: integer
+                      format: int32
+                    successThreshold:
+                      type: integer
+                      format: int32
+                    tcpSocket:
+                      type: object
+                      required:
+                        - port
+                      properties:
+                        host:
+                          type: string
+                        port: type: integer
+                            - type: string
+                          x-kubernetes-int-or-string: true
+                    timeoutSeconds:
+                      type: integer
+                      format: int32
+                schedulerName:
+                  type: string
+                startStrategy:
+                  type: string
+                subdomain:
+                  type: string
+                terminationGracePeriodSeconds:
+                  type: integer
+                  format: int64
+                tolerations:
+                  description: If toleration is specified, obey all the toleration rules.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      effect:
+                        type: string
+                      key:
+                        type: string
+                      operator:
+                        type: string
+                      tolerationSeconds:
+                        type: integer
+                        format: int64
+                      value:
+                        type: string
+                topologySpreadConstraints:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - maxSkew
+                      - topologyKey
+                      - whenUnsatisfiable
+                    properties:
+                      labelSelector:
+                        type: object
+                        properties:
+                          matchExpressions:
+                            type: array
+                            items:
+                              type: object
+                              required:
+                                - key
+                                - operator
+                              properties:
+                                key:
+                                  type: string
+                                operator:
+                                  type: string
+                                values:
+                                  type: array
+                                  items:
+                                    type: string
+                          matchLabels:
+                            type: object
+                            additionalProperties:
+                              type: string
+                      matchLabelKeys:
+                        type: array
+                        items:
+                          type: string
+                        x-kubernetes-list-type: atomic
+                      maxSkew:
+                        type: integer
+                        format: int32
+                      minDomains:
+                        type: integer
+                        format: int32
+                      nodeAffinityPolicy:
+                        type: string
+                      nodeTaintsPolicy:
+                        type: string
+                      topologyKey:
+                        type: string
+                      whenUnsatisfiable:
+                        type: string
+                  x-kubernetes-list-map-keys:
+                    - topologyKey
+                    - whenUnsatisfiable
+                  x-kubernetes-list-type: map
+                volumes:
+                  type: array
+                  items:
+                    description: Volume represents a named volume in a vmi.
+                    type: object
+                    required:
+                      - name
+                    properties:
+                      cloudInitConfigDrive:
+                        type: object
+                        properties:
+                          networkData:
+                            type: string
+                          networkDataBase64:
+                            type: string
+                          networkDataSecretRef:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                          secretRef:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                          userData:
+                            type: string
+                          userDataBase64:
+                            type: string
+                      cloudInitNoCloud:
+                        type: object
+                        properties:
+                          networkData:
+                            type: string
+                          networkDataBase64:
+                            type: string
+                          networkDataSecretRef:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                          secretRef:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                          userData:
+                            type: string
+                          userDataBase64:
+                            type: string
+                      configMap:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          optional:
+                            type: boolean
+                          volumeLabel:
+                            type: string
+                      containerDisk:
+                        type: object
+                        required:
+                          - image
+                        properties:
+                          image:
+                            type: string
+                          imagePullPolicy:
+                            type: string
+                          imagePullSecret:
+                            type: string
+                          path:
+                            type: string
+                      dataVolume:
+                        type: object
+                        required:
+                          - name
+                        properties:
+                          hotpluggable:
+                            type: boolean
+                          name:
+                            type: string
+                      downwardAPI:
+                        type: object
+                        properties:
+                          fields:
+                            description: Fields is a list of downward API volume file
+                            type: array
+                            items:
+                              type: object
+                              required:
+                                - path
+                              properties:
+                                fieldRef:
+                                  type: object
+                                  required:
+                                    - fieldPath
+                                  properties:
+                                    apiVersion:
+                                      type: string
+                                    fieldPath:
+                                      type: string
+                                mode:
+                                  type: integer
+                                  format: int32
+                                path:
+                                  type: string
+                                resourceFieldRef:
+                                  type: object
+                                  required:
+                                    - resource
+                                  properties:
+                                    containerName:
+                                      type: string
+                                    divisor: type: integer
+                                        - type: string
+                                      x-kubernetes-int-or-string: true
+                                    resource:
+                                      description: 'Required: resource to select'
+                                      type: string
+                          volumeLabel:
+                            type: string
+                      downwardMetrics:
+                        type: object
+                      emptyDisk:
+                        type: object
+                        required:
+                          - capacity
+                        properties:
+                          capacity:
+                            description: Capacity of the sparse disk.
+                            pattern: >-
+                              ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            anyOf:
+                              - type: integer
+                              - type: string
+                            x-kubernetes-int-or-string: true
+                      ephemeral:
+                        type: object
+                        properties:
+                          persistentVolumeClaim:
+                            type: object
+                            required:
+                              - claimName
+                            properties:
+                              claimName:
+                                type: string
+                              readOnly:
+                                type: boolean
+                      hostDisk:
+                        type: object
+                        required:
+                          - path
+                          - type
+                        properties:
+                          capacity:
+                            description: Capacity of the sparse disk
+                            pattern: >-
+                              ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            anyOf:
+                              - type: integer
+                              - type: string
+                            x-kubernetes-int-or-string: true
+                          path:
+                            description: The path to HostDisk image located on the cluster
+                            type: string
+                          shared:
+                            type: boolean
+                          type:
+                            type: string
+                      memoryDump:
+                        type: object
+                        required:
+                          - claimName
+                        properties:
+                          claimName:
+                            type: string
+                          hotpluggable:
+                            type: boolean
+                          readOnly:
+                            type: boolean
+                      name:
+                        type: string
+                      persistentVolumeClaim:
+                        type: object
+                        required:
+                          - claimName
+                        properties:
+                          claimName:
+                            type: string
+                          hotpluggable:
+                            type: boolean
+                          readOnly:
+                            type: boolean
+                      secret:
+                        type: object
+                        properties:
+                          optional:
+                            type: boolean
+                          secretName:
+                            type: string
+                          volumeLabel:
+                            type: string
+                      serviceAccount:
+                        type: object
+                        properties:
+                          serviceAccountName:
+                            type: string
+                      sysprep:
+                        description: Represents a Sysprep volume source.
+                        type: object
+                        properties:
+                          configMap:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                          secret:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+            status:
+              type: object
+              properties:
+                VSOCKCID:
+                  description: VSOCKCID is used to track the allocated VSOCK CID in the VM.
+                  type: integer
+                  format: int32
+                activePods:
+                  type: object
+                  additionalProperties:
+                    type: string
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - status
+                      - type
+                    properties:
+                      lastProbeTime:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      lastTransitionTime:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      message:
+                        type: string
+                      reason:
+                        type: string
+                      status:
+                        type: string
+                      type:
+                        type: string
+                currentCPUTopology:
+                  type: object
+                  properties:
+                    cores:
+                      type: integer
+                      format: int32
+                    sockets:
+                      type: integer
+                      format: int32
+                    threads:
+                      type: integer
+                      format: int32
+                evacuationNodeName:
+                  type: string
+                fsFreezeStatus:
+                  type: string
+                guestOSInfo:
+                  description: Guest OS Information
+                  type: object
+                  properties:
+                    id:
+                      description: Guest OS Id
+                      type: string
+                    kernelRelease:
+                      description: Guest OS Kernel Release
+                      type: string
+                    kernelVersion:
+                      description: Kernel version of the Guest OS
+                      type: string
+                    machine:
+                      description: Machine type of the Guest OS
+                      type: string
+                    name:
+                      description: Name of the Guest OS
+                      type: string
+                    prettyName:
+                      description: Guest OS Pretty Name
+                      type: string
+                    version:
+                      description: Guest OS Version
+                      type: string
+                    versionId:
+                      description: Version ID of the Guest OS
+                      type: string
+                interfaces:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      infoSource:
+                        type: string
+                      interfaceName:
+                        description: The interface name inside the Virtual Machine
+                        type: string
+                      ipAddress:
+                        type: string
+                      ipAddresses:
+                        type: array
+                        items:
+                          type: string
+                      mac:
+                        description: Hardware address of a Virtual Machine interface
+                        type: string
+                      name:
+                        type: string
+                      queueCount:
+                        description: Specifies how many queues are allocated by MultiQueue
+                        type: integer
+                        format: int32
+                launcherContainerImageVersion:
+                  type: string
+                machine:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                migrationMethod:
+                  type: string
+                migrationState:
+                  description: Represents the status of a live migration
+                  type: object
+                  properties:
+                    abortRequested:
+                      description: Indicates that the migration has been requested to abort
+                      type: boolean
+                    abortStatus:
+                      type: string
+                    completed:
+                      description: Indicates the migration completed
+                      type: boolean
+                    endTimestamp:
+                      description: The time the migration action ended
+                      type: string
+                      format: date-time
+                      nullable: true
+                    failed:
+                      description: Indicates that the migration failed
+                      type: boolean
+                    migrationConfiguration:
+                      description: Migration configurations to apply
+                      type: object
+                      properties:
+                        allowAutoConverge:
+                          type: boolean
+                        allowPostCopy:
+                          type: boolean
+                        bandwidthPerMigration: type: integer
+                            - type: string
+                          x-kubernetes-int-or-string: true
+                        completionTimeoutPerGiB:
+                          type: integer
+                          format: int64
+                        disableTLS:
+                          type: boolean
+                        matchSELinuxLevelOnMigration:
+                          type: boolean
+                        network:
+                          type: string
+                        nodeDrainTaintKey:
+                          type: string
+                        parallelMigrationsPerCluster:
+                          type: integer
+                          format: int32
+                        parallelOutboundMigrationsPerNode:
+                          type: integer
+                          format: int32
+                        progressTimeout:
+                          type: integer
+                          format: int64
+                        unsafeMigrationOverride:
+                          type: boolean
+                    migrationPolicyName:
+                      type: string
+                    migrationUid:
+                      type: string
+                    mode:
+                      type: string
+                    sourceNode:
+                      description: The source node that the VMI originated on
+                      type: string
+                    startTimestamp:
+                      description: The time the migration action began
+                      type: string
+                      format: date-time
+                      nullable: true
+                    targetAttachmentPodUID:
+                      description: The UID of the target attachment pod for hotplug volumes
+                      type: string
+                    targetCPUSet:
+                      type: array
+                      items:
+                        type: integer
+                      x-kubernetes-list-type: atomic
+                    targetDirectMigrationNodePorts:
+                      type: object
+                      additionalProperties:
+                        type: integer
+                    targetNode:
+                      description: The target node that the VMI is moving to
+                      type: string
+                    targetNodeAddress:
+                      description: The address of the target node to use for the migration
+                      type: string
+                    targetNodeDomainDetected:
+                      description: The Target Node has seen the Domain Start Event
+                      type: boolean
+                    targetNodeDomainReadyTimestamp:
+                      type: string
+                      format: date-time
+                    targetNodeTopology:
+                      type: string
+                    targetPod:
+                      description: The target pod that the VMI is moving to
+                      type: string
+                migrationTransport:
+                  description: This represents the migration transport
+                  type: string
+                nodeName:
+                  type: string
+                phase:
+                  type: string
+                phaseTransitionTimestamps:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      phase:
+                        type: string
+                      phaseTransitionTimestamp:
+                        type: string
+                        format: date-time
+                  x-kubernetes-list-type: atomic
+                qosClass:
+                  type: string
+                reason:
+                  type: string
+                runtimeUser:
+                  type: integer
+                  format: int64
+                selinuxContext:
+                  type: string
+                topologyHints:
+                  type: object
+                  properties:
+                    tscFrequency:
+                      type: integer
+                      format: int64
+                virtualMachineRevisionName:
+                  type: string
+                volumeStatus:
+                  description: VolumeStatus contains the statuses of all the volumes
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - name
+                      - target
+                    properties:
+                      hotplugVolume:
+                        type: object
+                        properties:
+                          attachPodName:
+                            type: string
+                          attachPodUID:
+                            type: string
+                      memoryDumpVolume:
+                        type: object
+                        properties:
+                          claimName:
+                            type: string
+                          endTimestamp:
+                            type: string
+                            format: date-time
+                          startTimestamp:
+                            type: string
+                            format: date-time
+                          targetFileName:
+                            type: string
+                      message:
+                        type: string
+                      name:
+                        description: Name is the name of the volume
+                        type: string
+                      persistentVolumeClaimInfo:
+                        type: object
+                        properties:
+                          accessModes:
+                            type: array
+                            items:
+                              type: string
+                            x-kubernetes-list-type: atomic
+                          capacity:
+                            type: object
+                            additionalProperties:
+                              pattern: >-
+                                ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              anyOf:
+                                - type: integer
+                                - type: string
+                              x-kubernetes-int-or-string: true
+                          filesystemOverhead:
+                            type: string
+                            pattern: ^(0(?:\.\d{1,3})?|1)$
+                          preallocated:
+                            type: boolean
+                          requests:
+                            type: object
+                            additionalProperties:
+                              pattern: >-
+                                ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              anyOf:
+                                - type: integer
+                                - type: string
+                              x-kubernetes-int-or-string: true
+                          volumeMode:
+                            type: string
+                      phase:
+                        description: Phase is the phase
+                        type: string
+                      reason:
+                        type: string
+                      size:
+                        description: Represents the size of the volume
+                        type: integer
+                        format: int64
+                      target:
+                        type: string
+                  x-kubernetes-list-type: atomic
+      additionalPrinterColumns:
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: IP
+          type: string
+          jsonPath: .status.interfaces[0].ipAddress
+        - name: NodeName
+          type: string
+          jsonPath: .status.nodeName
+        - name: Ready
+          type: string
+          jsonPath: .status.conditions[?(@.type=='Ready')].status
+        - name: Live-Migratable
+          type: string
+          priority: 1
+          jsonPath: .status.conditions[?(@.type=='LiveMigratable')].status
+        - name: Paused
+          type: string
+          priority: 1
+          jsonPath: .status.conditions[?(@.type=='Paused')].status
+  conversion:
+    strategy: None
