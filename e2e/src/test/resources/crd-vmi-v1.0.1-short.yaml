@@ -1069,7 +1069,11 @@ spec:
                       description: Memory allow specifying the VMI memory features.
                       type: object
                       properties:
-                        guest: type: integer
+                        guest:
+                          pattern: >-
+                            ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          anyOf:
+                            - type: integer
                             - type: string
                           x-kubernetes-int-or-string: true
                         hugepages:
@@ -1144,7 +1148,9 @@ spec:
                         path:
                           description: Path to access on the HTTP server.
                           type: string
-                        port: type: integer
+                        port:
+                          anyOf:
+                            - type: integer
                             - type: string
                           x-kubernetes-int-or-string: true
                         scheme:
@@ -1165,7 +1171,9 @@ spec:
                       properties:
                         host:
                           type: string
-                        port: type: integer
+                        port:
+                          anyOf:
+                            - type: integer
                             - type: string
                           x-kubernetes-int-or-string: true
                     timeoutSeconds:
@@ -1244,7 +1252,9 @@ spec:
                         path:
                           description: Path to access on the HTTP server.
                           type: string
-                        port: type: integer
+                        port:
+                          anyOf:
+                            - type: integer
                             - type: string
                           x-kubernetes-int-or-string: true
                         scheme:
@@ -1265,7 +1275,9 @@ spec:
                       properties:
                         host:
                           type: string
-                        port: type: integer
+                        port:
+                          anyOf:
+                            - type: integer
                             - type: string
                           x-kubernetes-int-or-string: true
                     timeoutSeconds:
@@ -1465,7 +1477,11 @@ spec:
                                   properties:
                                     containerName:
                                       type: string
-                                    divisor: type: integer
+                                    divisor:
+                                      pattern: >-
+                                        ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                      anyOf:
+                                        - type: integer
                                         - type: string
                                       x-kubernetes-int-or-string: true
                                     resource:
@@ -1714,7 +1730,11 @@ spec:
                           type: boolean
                         allowPostCopy:
                           type: boolean
-                        bandwidthPerMigration: type: integer
+                        bandwidthPerMigration:
+                          pattern: >-
+                            ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          anyOf:
+                            - type: integer
                             - type: string
                           x-kubernetes-int-or-string: true
                         completionTimeoutPerGiB:
@@ -2970,7 +2990,11 @@ spec:
                       description: Memory allow specifying the VMI memory features.
                       type: object
                       properties:
-                        guest: type: integer
+                        guest:
+                          pattern: >-
+                            ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          anyOf:
+                            - type: integer
                             - type: string
                           x-kubernetes-int-or-string: true
                         hugepages:
@@ -3045,7 +3069,9 @@ spec:
                         path:
                           description: Path to access on the HTTP server.
                           type: string
-                        port: type: integer
+                        port:
+                          anyOf:
+                            - type: integer
                             - type: string
                           x-kubernetes-int-or-string: true
                         scheme:
@@ -3066,7 +3092,9 @@ spec:
                       properties:
                         host:
                           type: string
-                        port: type: integer
+                        port:
+                          anyOf:
+                            - type: integer
                             - type: string
                           x-kubernetes-int-or-string: true
                     timeoutSeconds:
@@ -3145,7 +3173,9 @@ spec:
                         path:
                           description: Path to access on the HTTP server.
                           type: string
-                        port: type: integer
+                        port:
+                          anyOf:
+                            - type: integer
                             - type: string
                           x-kubernetes-int-or-string: true
                         scheme:
@@ -3166,7 +3196,9 @@ spec:
                       properties:
                         host:
                           type: string
-                        port: type: integer
+                        port:
+                          anyOf:
+                            - type: integer
                             - type: string
                           x-kubernetes-int-or-string: true
                     timeoutSeconds:
@@ -3366,7 +3398,11 @@ spec:
                                   properties:
                                     containerName:
                                       type: string
-                                    divisor: type: integer
+                                    divisor:
+                                      pattern: >-
+                                        ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                      anyOf:
+                                        - type: integer
                                         - type: string
                                       x-kubernetes-int-or-string: true
                                     resource:
@@ -3615,7 +3651,11 @@ spec:
                           type: boolean
                         allowPostCopy:
                           type: boolean
-                        bandwidthPerMigration: type: integer
+                        bandwidthPerMigration:
+                          pattern: >-
+                            ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          anyOf:
+                            - type: integer
                             - type: string
                           x-kubernetes-int-or-string: true
                         completionTimeoutPerGiB:
